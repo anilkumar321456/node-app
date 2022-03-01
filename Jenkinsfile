@@ -1,5 +1,5 @@
 pipeline {
-    agent {label 'new'}
+    agent {label 'webserver'}
     environment{
         DOCKER_TAG = getDockerTag()
     }
