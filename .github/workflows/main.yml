@@ -47,6 +47,6 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           cd node-app
-          helm upgrade --install my-app helm/node-app \
+          helm upgrade --install node-app node-app/helm/node-app \
             --set image.repository=${{ secrets.ECR_REPOSITORY }} \
             --set image.tag=latest
