@@ -7,7 +7,6 @@ on:
 
 jobs:
   deploy:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -28,17 +27,27 @@ jobs:
         | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
 
     - name: Build Docker Image
-      run: |
-        docker build -t my-app .
+      run: docker build -t my-app .
 
     - name: Tag Docker Image
-      run: |
-        docker tag my-app:latest ${{ secrets.ECR_REPOSITORY }}:latest
+      run: docker tag my-app:latest ${{ secrets.ECR_REPOSITORY }}:latest
 
     - name: Push Docker Image to ECR
-      run: |
-        docker push ${{ secrets.ECR_REPOSITORY }}:latest
+      run: docker push ${{ secrets.ECR_REPOSITORY }}:latest
 
+
+    # Copy project files to EC2
+    - name: Copy files to EC2
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        source: "."
+        target: "~/node-app"
+
+
+    # Deploy with Helm
     - name: Deploy to EC2 using Helm
       uses: appleboy/ssh-action@v0.1.7
       with:
@@ -46,7 +55,14 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd node-app
+          cd ~/node-app
+
+          # start minikube if not running
+          minikube status || minikube start
+
+          # set kubeconfig
+          export KUBECONFIG=$HOME/.kube/config
+
           helm upgrade --install node-app helm/node-app \
             --set image.repository=${{ secrets.ECR_REPOSITORY }} \
             --set image.tag=latest
