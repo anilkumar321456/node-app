@@ -35,14 +35,14 @@ jobs:
     - name: Push Docker Image to ECR
       run: docker push ${{ secrets.ECR_REPOSITORY }}:latest
       
-    - name: Copy project files to EC2
+    - name: Copy helm chart to EC2
       uses: appleboy/scp-action@v0.1.7
       with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        source: "./*"
-        target: "/home/ubuntu/node-app"
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "helm/node-app/*"
+          target: "/home/ubuntu/node-app"
 
     - name: Deploy Helm Chart
       uses: appleboy/ssh-action@v0.1.7
