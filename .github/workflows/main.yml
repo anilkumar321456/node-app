@@ -34,17 +34,8 @@ jobs:
 
     - name: Push Docker Image to ECR
       run: docker push ${{ secrets.ECR_REPOSITORY }}:latest
-      
-    - name: Copy helm chart to EC2
-      uses: appleboy/scp-action@v0.1.7
-      with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "helm/node-app/*"
-          target: "/home/ubuntu/node-app"
 
-    - name: Deploy Helm Chart
+    - name: Deploy Helm Chart on EC2
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: ${{ secrets.EC2_HOST }}
@@ -53,12 +44,15 @@ jobs:
         script: |
           cd /home/ubuntu/node-app
 
-          echo "Project files:"
-          ls -l
+          echo "Updating repository..."
+          git pull origin master
 
-          echo "Helm chart location:"
+          echo "Helm directory:"
           ls helm/node-app
 
-          helm upgrade --install node-app helm/node-app \
+          cd helm/node-app
+
+          echo "Deploying with Helm..."
+          helm upgrade --install node-app . \
             --set image.repository=${{ secrets.ECR_REPOSITORY }} \
             --set image.tag=latest
