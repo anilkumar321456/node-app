@@ -34,34 +34,30 @@ jobs:
 
     - name: Push Docker Image to ECR
       run: docker push ${{ secrets.ECR_REPOSITORY }}:latest
-
-
-    # Copy project files to EC2
-    - name: Copy files to EC2
+      
+    - name: Copy project files to EC2
       uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
-        source: "."
-        target: "~/node-app"
+        source: "./*"
+        target: "/home/ubuntu/node-app"
 
-
-    # Deploy with Helm
-    - name: Deploy to EC2 using Helm
+    - name: Deploy Helm Chart
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd ~/node-app
+          cd /home/ubuntu/node-app
 
-          # start minikube if not running
-          minikube status || minikube start
+          echo "Project files:"
+          ls -l
 
-          # set kubeconfig
-          export KUBECONFIG=$HOME/.kube/config
+          echo "Helm chart location:"
+          ls helm/node-app
 
           helm upgrade --install node-app helm/node-app \
             --set image.repository=${{ secrets.ECR_REPOSITORY }} \
