@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: kammana/nodeapp
+  repository: 117949645563.dkr.ecr.us-east-1.amazonaws.com/myrepo-forcicd
   tag: v1
   pullPolicy: IfNotPresent
 
