@@ -10,7 +10,7 @@ jobs:
 build:
 runs-on: ubuntu-latest
 
-```
+
 steps:
   - uses: actions/checkout@v4
 
@@ -29,13 +29,13 @@ steps:
     with:
       name: vprofile-war
       path: target/vprofile-v1.war
-```
+
 
 deploy:
 needs: build
 runs-on: ubuntu-latest
 
-```
+
 steps:
   - name: Checkout Code
     uses: actions/checkout@v4
@@ -88,4 +88,4 @@ steps:
         helm upgrade --install node-app . \
           --set image.repository=${{ secrets.ECR_REPOSITORY }} \
           --set image.tag=latest
-```
+
