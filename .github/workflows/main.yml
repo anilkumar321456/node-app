@@ -28,8 +28,8 @@ jobs:
       with:
         name: vprofile-war
         path: target/vprofile-v1.war
+  
   deploy:
-    runs-on: ubuntu-latest
 
     steps:
 
