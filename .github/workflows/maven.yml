@@ -59,8 +59,10 @@ jobs:
         | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
 
     - name: Build Docker Image
-      working-directory: ./myapp
       run: docker build -t my-app .
+
+    - name: Show current path 
+      run: pwd
 
     - name: Tag Docker Image
       run: docker tag my-app:latest ${{ secrets.ECR_REPOSITORY }}:latest
