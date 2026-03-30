@@ -58,9 +58,11 @@ jobs:
         aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
         | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
 
-    - name: Build Docker Image
-      run: docker build -t my-app .
-
+    - name: Build Docker Image inside Minikube
+      run: |
+        eval $(minikube docker-env)
+        docker build -t my-app .
+      
     - name: Show current path 
       run: pwd
 
