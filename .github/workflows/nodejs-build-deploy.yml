@@ -80,5 +80,6 @@ jobs:
             --set image.repository=$ECR_REPO \
             --set image.tag=$IMAGE_TAG
 
+
           # Verify rollout
           kubectl rollout status deployment/nodeapp || true
