@@ -1,9 +1,12 @@
-FROM tomcat:10.1.53-jre25-temurin-noble
+FROM node:18
 
-RUN rm -rf /usr/local/tomcat/webapps/*
+WORKDIR /app
 
-COPY target/vprofile-v1.war /usr/local/tomcat/webapps/ROOT.war
+COPY package*.json ./
+RUN npm install
 
-EXPOSE 8080
+COPY . .
 
-CMD ["catalina.sh","run"]
+EXPOSE 3000
+
+CMD ["npm", "start"]
