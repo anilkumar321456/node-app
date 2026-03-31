@@ -1,0 +1,84 @@
+name: CI-CD Pipeline (Build + Deploy)
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  ECR_REPO: 117949645563.dkr.ecr.us-east-1.amazonaws.com/myrepo-forcicd
+  IMAGE_TAG: latest
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout code
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # 2. Setup Node
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    # 3. Install dependencies
+    - name: Install deps
+      run: npm install
+
+    # 4. Run tests
+    - name: Run tests
+      run: npm test
+
+    # 5. Configure AWS
+    - name: Configure AWS
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        region: us-east-1
+
+    # 6. Login to ECR
+    - name: Login to ECR
+      run: |
+        aws ecr get-login-password --region us-east-1 \
+        | docker login --username AWS --password-stdin $ECR_REPO
+
+    # 7. Build Docker Image
+    - name: Build Image
+      run: |
+        docker build -t myrepo-forcicd .
+
+    # 8. Tag Image
+    - name: Tag Image
+      run: |
+        docker tag myrepo-forcicd:latest $ECR_REPO:$IMAGE_TAG
+
+    # 9. Push Image
+    - name: Push Image
+      run: |
+        docker push $ECR_REPO:$IMAGE_TAG
+
+    # 10. Deploy to Minikube via SSH (Helm)
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          set -e
+
+          cd /home/ubuntu/app
+
+          # Optional: pull latest Helm chart
+          git pull
+
+          # Update image in Helm
+          helm upgrade --install nodeapp ./nodeapp-chart \
+            --set image.repository=$ECR_REPO \
+            --set image.tag=$IMAGE_TAG
+
+          # Verify rollout
+          kubectl rollout status deployment/nodeapp || true
