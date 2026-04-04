@@ -75,7 +75,7 @@ jobs:
           # Optional: pull latest Helm chart
           git pull
 
-          helm upgrade --install node-app ./helm \
+          helm upgrade --install node-app ./helm/node-app \
            --set image.repository=$ECR_REPO \
            --set image.tag=$IMAGE_TAG
           # Verify rollout
