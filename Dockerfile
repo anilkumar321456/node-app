@@ -1,4 +1,4 @@
-FROM node:18
+FROM testlagoon/node-20:pr-1637
 
 WORKDIR /app
 
