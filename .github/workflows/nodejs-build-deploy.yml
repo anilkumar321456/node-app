@@ -76,7 +76,8 @@ jobs:
           git pull
 
           helm upgrade --install node-app ./helm/node-app \
-           --set image.repository=$ECR_REPO \
-           --set image.tag=$IMAGE_TAG
+          -f values.yaml \
+          --set image.repository=$ECR_REPO \
+          --set image.tag=$IMAGE_TAG
           # Verify rollout
           kubectl rollout status deployment/node-app || true
