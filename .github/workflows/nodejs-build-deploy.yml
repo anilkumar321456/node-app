@@ -74,10 +74,10 @@ jobs:
 
           # Optional: pull latest Helm chart
           git pull
-
-          helm upgrade --install node-app ./helm/node-app \
-          -f values.yaml \
-          --set image.repository=$ECR_REPO \
-          --set image.tag=$IMAGE_TAG
+          helm upgrade --install node-app /home/ubuntu/node-app/helm/node-app \
+           -f /home/ubuntu/node-app/helm/node-app/values.yaml \
+             --set image.repository=$ECR_REPO \
+              --set image.tag=$IMAGE_TAG
+          
           # Verify rollout
           kubectl rollout status deployment/node-app || true
