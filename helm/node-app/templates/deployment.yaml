@@ -28,19 +28,6 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /vprofile-v1/
-              port: http
-            initialDelaySeconds: 60
-            periodSeconds: 10
-            failureThreshold: 5
-          readinessProbe:
-            httpGet:
-              path: /vprofile-v1/
-              port: http
-            initialDelaySeconds: 30
-            periodSeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
