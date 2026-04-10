@@ -1,0 +1,14 @@
+replicaCount: 2
+
+image:
+  repository: 117949645563.dkr.ecr.us-east-1.amazonaws.com/myrepo-forcicd
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8080
+  nodePort: 30007
+
+resources: {}
