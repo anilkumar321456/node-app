@@ -78,10 +78,10 @@ jobs:
           git pull origin master
 
           echo "Deploying with Helm..."
-          helm upgrade --install node-app /home/ubuntu/node-app/helm/node-app \
-            -f /home/ubuntu/node-app/helm/node-app/values.yaml \
-            --set image.repository=${{ secrets.ECR_REPOSITORY }} \
-            --set image.tag=${{ env.IMAGE_TAG }}
+          helm upgrade --install node-app /home/ubuntu/Node-app/node-app/helm-node \
+          -f /home/ubuntu/Node-app/node-app/helm-node/values.yaml \
+          --set image.repository=${{ secrets.ECR_REPOSITORY }} \
+          --set image.tag=${{ env.IMAGE_TAG }}
 
           echo "Checking rollout..."
           kubectl rollout status deployment/node-app || true
