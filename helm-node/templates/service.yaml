@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "node-app.fullname" . }}
+  name: node-app
 spec:
   type: {{ .Values.service.type }}
   selector:
-    app: {{ include "node-app.name" . }}
+    app: node-app
   ports:
     - protocol: TCP
       port: {{ .Values.service.port }}
