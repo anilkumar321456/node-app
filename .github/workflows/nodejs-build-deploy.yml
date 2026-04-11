@@ -81,9 +81,6 @@ jobs:
           cd /home/ubuntu/node-app/helm-node
 
           helm upgrade --install node-app . \
-          -f values.yaml \
-          --set image.repository=$ECR_REPOSITORY \
-          --set image.tag=$IMAGE_TAG
-
+          -f values.yaml 
           # echo "Checking rollout..."
           # kubectl rollout status deployment/node-app || true
