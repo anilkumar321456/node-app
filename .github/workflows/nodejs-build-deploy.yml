@@ -78,7 +78,7 @@ jobs:
           git pull origin master
 
           echo "Deploying with Helm..."
-          cd /home/ubuntu/node-app/node-app/helm-node
+          cd /home/ubuntu/node-app/helm-node
 
           helm upgrade --install node-app . \
           -f values.yaml \
