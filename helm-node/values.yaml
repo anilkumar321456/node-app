@@ -3,7 +3,7 @@ replicaCount: 2
 image:
   repository: 117949645563.dkr.ecr.us-east-1.amazonaws.com/myrepo-forcicd
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 service:
   type: NodePort
